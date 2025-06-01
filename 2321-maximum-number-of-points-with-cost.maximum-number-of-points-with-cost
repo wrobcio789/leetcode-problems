@@ -1,0 +1,45 @@
+#include <vector>
+#include <climits>
+#include <algorithm>
+
+class Solution {
+public:
+    long long maxPoints(std::vector<std::vector<int>>& points) {
+        const int height = points.size();
+        const int width = points[0].size();
+
+        std::vector<std::vector<long long>> maxPoints(2, std::vector<long long>(width, 0));
+        for (int i = 0; i<width; i++) {
+            maxPoints[0][i] = points[0][i];
+        }
+
+        for (int i = 1; i < height; i++) {
+            auto& currentMaxPoints = maxPoints[i%2];
+            auto& prevMaxPoints = maxPoints[(i-1)%2];
+
+            std::vector<long long> leftMax(width), rightMax(width);
+
+            leftMax[0] = prevMaxPoints[0];
+            for(int i = 1; i < width; i++) {
+                leftMax[i] = std::max(leftMax[i-1] - 1, prevMaxPoints[i]);
+            }
+
+            rightMax[width - 1] = prevMaxPoints[width - 1];
+            for(int i = width - 2; i >= 0; i--) {
+                rightMax[i] = std::max(rightMax[i + 1] - 1, prevMaxPoints[i]);
+            }
+
+            for (int j = 0; j < width; j++) {
+                const int point = points[i][j];
+
+                long long maxPointsToGet = std::max(leftMax[j], rightMax[j]);
+                currentMaxPoints[j] = maxPointsToGet + point;
+            }
+        }
+
+
+        const auto& lastRow = maxPoints[(height-1)%2];
+        return *std::max_element(lastRow.cbegin(), lastRow.cend());
+
+    }
+};
