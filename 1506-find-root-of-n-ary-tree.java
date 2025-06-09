@@ -1,16 +1,19 @@
-import java.util.HashSet;
+import java.util.List;
 
 class Solution {
     public Node findRoot(List<Node> tree) {
-        final var nodes = new HashSet<>(tree);
 
+        int xorSum = 0;
         for (final var node : tree) {
+            xorSum ^= node.val;
             for (final var children : node.children) {
-                nodes.remove(children);
+                xorSum ^= children.val;
             }
         }
 
-        return nodes.stream()
+        final var rootValue = xorSum;
+        return tree.stream()
+                .filter(node -> node.val == rootValue)
                 .findAny()
                 .orElseThrow();
     }
