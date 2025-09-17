@@ -8,13 +8,14 @@ class Solution {
         final var result = new int[resultHeight][resultWidth];
 
         for (int i = 0; i < resultHeight; i++) {
-            for (int j = 0; j < resultWidth; j++) {
-                int total = 0;
-                for (int k = 0; k < kSize; k++) {
-                    total += mat1[i][k] * mat2[k][j];
+            for (int k = 0; k < kSize; k++) {
+                if (mat1[i][k] == 0) {
+                    continue;
                 }
 
-                result[i][j] = total;
+                for (int j = 0; j < resultWidth; j++) {
+                    result[i][j] += mat1[i][k] * mat2[k][j];
+                }
             }
         }
 
